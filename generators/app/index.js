@@ -26,13 +26,17 @@ module.exports = class extends Generator {
         type: 'input',
         name: 'fqLanguageName', // Fully qualified language name
         message: 'Language name:',
-        default: 'org.xtext.example.mydsl.MyDsl'
+        default: function (answers) {
+          return `${answers.projectName}.MyDsl`;
+        }
       },
       {
         type: 'input',
         name: 'fileExtension',
         message: 'File extension:',
-        default: 'mydsl'
+        default: function (answers) {
+          return answers.fqLanguageName.split('.').pop().toLowerCase();
+        }
       }
     ];
 
