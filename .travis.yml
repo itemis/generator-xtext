@@ -1,7 +1,7 @@
 language: node_js
 node_js:
-- v7
-- v6
+  - '7'
+  - '6'
 after_script: cat ./coverage/lcov.info | coveralls
 deploy:
   provider: npm
@@ -11,3 +11,4 @@ deploy:
   on:
     tags: true
     repo: itemis/generator-xtext
+    node: '6'
