@@ -1,0 +1,9 @@
+grammar <%= rootPackage %>.<%= languageName %> with org.eclipse.xtext.common.Terminals
+
+generate <%= ePackageName %> "<%= ePackageNs %>"
+
+Model:
+    greetings+=Greeting*;
+    
+Greeting:
+    'Hello' name=ID '!';

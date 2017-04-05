@@ -1,0 +1,9 @@
+{
+  "generator-node": {
+    "promptValues": {
+      "authorName": "Franz Becker",
+      "authorEmail": "franz.becker@itemis.de",
+      "authorUrl": "http://www.itemis.com"
+    }
+  }
+}
