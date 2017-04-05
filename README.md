@@ -26,3 +26,15 @@ Then generate your new project:
 ```bash
 yo xtext
 ```
+
+## Developers
+
+### Release process
+
+In order to create a release, the version needs to be increased and tagged. This is done easily using `npm version`, for example:
+
+```
+npm version minor
+```
+
+After the commit and tag is pushed Travis will automatically deploy the tagged version.
