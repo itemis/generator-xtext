@@ -1,8 +1,16 @@
 language: node_js
 node_js:
-  - v7
-  - v6
-  - v5
-  - v4
-  - '0.12'
-after_script: 'cat ./coverage/lcov.info | coveralls'
+- v7
+- v6
+- v5
+- v4
+- '0.12'
+after_script: cat ./coverage/lcov.info | coveralls
+deploy:
+  provider: npm
+  email: franz.becker@itemis.de
+  api_key:
+    secure: MAicFz+rOGZNdsDAnVqQtos3Mmu4jJz8urQwzsHLtAzV0qYnOgKcxtpQ7s9NBms201WZl1p+agEHEwxdiroTuEWRPuFX7yKfDNkj65eUywkgEXozgFHiY8iodyk1FhZg6x8brz/Q2sFIim4gJi/jURMnrf3R8or5TlO9EXcbZ9z7L0X+Oq68LvWfTqtCIR3/f5lo2X1TV9+8Xs2eL3SF+oCrENn9y9G03oJvmOikPGnpC2fhmn8fGN2MllyV5D3glzYMuFWHLzKs/AWFuenbXT+QJ1sg9V86tVzyRcqbBSeJeojyJG+dkidZ1CPa4J0X00wm2p1rtrTsMWboLGvHCx+MNHnimqOkYklXGgyW5u4EktmAUyaiRLrEbWztA/CzsxiIGfZl7kiQClQ8dpHDV+zbB+kntS8FhC+eTC/DPql3aZpiKI+eDXCRi89N/TnecUgaZT7N35Np9E5J9UTCjZWBwRnH6eGNM2LpqTPd2wLSGq8O9pSzu7syh37TuWOE6WHfPbFara7ijwRklMimgRYXuEGOrQQvu7gU0SME3mb/HCiYxQaaUh2kcyTggqo0OOrxoOt+DIQjZ//t5cEL4AtxuTvIJ8ZsyPBTLwytm7xUv9xeQsBZqKE9o+ISvwM7J7TJMiW4x760r8etLjftYjrFocInx7B02XnUbY17Fnc=
+  on:
+    tags: true
+    repo: itemis/generator-xtext
