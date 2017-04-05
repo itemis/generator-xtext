@@ -37,12 +37,48 @@ module.exports = class extends Generator {
         default: function (answers) {
           return answers.fqLanguageName.split('.').pop().toLowerCase();
         }
+      },
+      {
+        type: 'checkbox',
+        name: 'facets',
+        message: 'Select the facets you would like to use:',
+        choices: [
+          {
+            name: 'testing',
+            checked: true
+          },
+          {
+            name: 'ide',
+            checked: true
+          },
+          {
+            name: 'web'
+          }
+        ],
+        validate: function (answers) {
+          let webWithoutIde = answers.includes('web') && !answers.includes('ide');
+          if (webWithoutIde) {
+            return '\'ide\' is required when using \'web\'.';
+          }
+          return true;
+        }
       }
     ];
 
     return this.prompt(prompts).then(props => {
       // To access props later use this.props.someAnswer;
       this.props = props;
+
+      // Simplify access by precalculating values
+      this.testingEnabled = props.facets.includes('testing');
+      this.ideEnabled = props.facets.includes('ide');
+      this.webEnabled = props.facets.includes('web');
+
+      // Split the fully qualified language name into its root package and the actual name
+      let languageNameSplit = this.props.fqLanguageName.split('.');
+      this.languageName = stringUtils.toFirstUpper(languageNameSplit.pop());
+      this.rootPackage = languageNameSplit.join('.');
+      this.javaSourceRoot = `src/main/java/${this.rootPackage.split('.').join('/')}`;
     });
   }
 
@@ -52,7 +88,13 @@ module.exports = class extends Generator {
    */
   writing() {
     this._setupGradleBuild();
-    this._createXtextProject();
+    this._createCoreProject();
+    if (this.ideEnabled) {
+      this._createIdeProject();
+    }
+    if (this.webEnabled) {
+      this._createWebProject();
+    }
   }
 
   /**
@@ -84,35 +126,31 @@ module.exports = class extends Generator {
   /**
    * Creates the core Xtext project.
    */
-  _createXtextProject() {
-    // Split the fully qualified language name into its root package and the actual name
-    let languageNameSplit = this.props.fqLanguageName.split('.');
-    let languageName = stringUtils.toFirstUpper(languageNameSplit.pop());
-    let rootPackage = languageNameSplit.join('.');
-    let javaSourceRoot = `src/main/java/${rootPackage.split('.').join('/')}`;
-
+  _createCoreProject() {
     // Generate MWE2 file
-    let workflowFile = `${javaSourceRoot}/Generate${languageName}.mwe2`;
+    let workflowFile = `${this.javaSourceRoot}/Generate${this.languageName}.mwe2`;
     this.fs.copyTpl(
       this.templatePath('org.xtext.example.mydsl/src/main/java/GenerateMyDsl.mwe2'),
       this.destinationPath(`${this.props.projectName}/${workflowFile}`),
       {
         projectName: this.props.projectName,
-        rootPackage: rootPackage,
-        languageName: languageName,
-        fileExtension: this.props.fileExtension
+        rootPackage: this.rootPackage,
+        languageName: this.languageName,
+        fileExtension: this.props.fileExtension,
+        testingEnabled: this.testingEnabled,
+        webEnabled: this.webEnabled
       }
     );
 
     // Generate Xtext grammar
-    let grammarFile = `${javaSourceRoot}/${languageName}.xtext`;
+    let grammarFile = `${this.javaSourceRoot}/${this.languageName}.xtext`;
     this.fs.copyTpl(
       this.templatePath('org.xtext.example.mydsl/src/main/java/MyDsl.xtext'),
       this.destinationPath(`${this.props.projectName}/${grammarFile}`),
       {
-        rootPackage: rootPackage,
-        languageName: languageName,
-        ePackageName: stringUtils.toFirstLower(languageName),
+        rootPackage: this.rootPackage,
+        languageName: this.languageName,
+        ePackageName: stringUtils.toFirstLower(this.languageName),
         ePackageNs: stringUtils.toURL(this.props.fqLanguageName)
       }
     );
@@ -123,13 +161,51 @@ module.exports = class extends Generator {
       this.destinationPath(`${this.props.projectName}/build.gradle`),
       {
         workflowFile: workflowFile,
-        grammarFile: grammarFile
+        grammarFile: grammarFile,
+        testingEnabled: this.testingEnabled
       }
     );
     this.fs.write(
       this.destinationPath('settings.gradle'),
-      `include "${this.props.projectName}"\n`
+      `include "${this.props.projectName}"`
     );
+  }
+
+  /**
+   * Creates the generic IDE project.
+   */
+  _createIdeProject() {
+    // Setup Gradle build
+    this.fs.copyTpl(
+      this.templatePath('org.xtext.example.mydsl.ide/build.gradle'),
+      this.destinationPath(`${this.props.projectName}.ide/build.gradle`),
+      { projectName: this.props.projectName }
+    );
+    this.fs.append(
+      this.destinationPath('settings.gradle'),
+      `include "${this.props.projectName}.ide"`,
+      {separator: '\n'}
+    )
+  }
+
+  /**
+   * Creates the web project.
+   */
+  _createWebProject() {
+    // Setup Gradle build
+    this.fs.copyTpl(
+      this.templatePath('org.xtext.example.mydsl.web/build.gradle'),
+      this.destinationPath(`${this.props.projectName}.web/build.gradle`),
+      {
+        projectName: this.props.projectName,
+        rootPackage: this.rootPackage,
+      }
+    );
+    this.fs.append(
+      this.destinationPath('settings.gradle'),
+      `include "${this.props.projectName}.web"`,
+      {separator: '\n'}
+    )
   }
 
   /**

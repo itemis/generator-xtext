@@ -9,7 +9,8 @@ describe('generator-xtext:app', () => {
       .withPrompts({
         projectName: 'com.example.somedsl',
         fqLanguageName: 'com.example.SomeDsl',
-        fileExtension: 'somedsl'
+        fileExtension: 'somedsl',
+        facets: []
       });
   });
 

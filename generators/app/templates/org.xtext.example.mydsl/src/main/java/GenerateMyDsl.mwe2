@@ -13,6 +13,16 @@ Workflow {
                 baseName = "<%= projectName %>"
                 rootPath = rootPath
                 mavenLayout = true
+                 <% if (testingEnabled) { %>
+                runtimeTest = {
+                    enabled = true
+                }
+                <% } %>
+                <% if (webEnabled) { %>
+                web = {
+                    enabled = true
+                }
+                <% } %>
             }
             code = {
                 encoding = "UTF-8"
