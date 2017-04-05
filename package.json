@@ -1,8 +1,8 @@
 {
   "name": "generator-xtext",
   "version": "0.1.0",
-  "description": "",
-  "homepage": "",
+  "description": "Yeoman generator for Xtext",
+  "homepage": "https://github.com/itemis/generator-xtext",
   "author": {
     "name": "Franz Becker",
     "email": "franz.becker@itemis.de",
