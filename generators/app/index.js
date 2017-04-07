@@ -103,6 +103,10 @@ module.exports = class extends Generator {
   _setupGradleBuild() {
     // Copying static files
     this.fs.copy(
+      this.templatePath('.gitignore'),
+      this.destinationPath('.gitignore')
+    );
+    this.fs.copy(
       this.templatePath('gradle/'),
       this.destinationPath('gradle/')
     );
@@ -179,13 +183,13 @@ module.exports = class extends Generator {
     this.fs.copyTpl(
       this.templatePath('org.xtext.example.mydsl.ide/build.gradle'),
       this.destinationPath(`${this.props.projectName}.ide/build.gradle`),
-      { projectName: this.props.projectName }
+      {projectName: this.props.projectName}
     );
     this.fs.append(
       this.destinationPath('settings.gradle'),
       `include "${this.props.projectName}.ide"`,
       {separator: '\n'}
-    )
+    );
   }
 
   /**
@@ -198,14 +202,14 @@ module.exports = class extends Generator {
       this.destinationPath(`${this.props.projectName}.web/build.gradle`),
       {
         projectName: this.props.projectName,
-        rootPackage: this.rootPackage,
+        rootPackage: this.rootPackage
       }
     );
     this.fs.append(
       this.destinationPath('settings.gradle'),
       `include "${this.props.projectName}.web"`,
       {separator: '\n'}
-    )
+    );
   }
 
   /**
