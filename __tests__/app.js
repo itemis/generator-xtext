@@ -33,4 +33,8 @@ describe('generator-xtext:app', () => {
       'com.example.somedsl/build.gradle'
     ]);
   });
+
+  it('creates a .gitignore in the project root', () => {
+    assert.file(['.gitignore']);
+  });
 });
