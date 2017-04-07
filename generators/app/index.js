@@ -214,7 +214,7 @@ module.exports = class extends Generator {
       {
         projectName: this.props.projectName,
         rootPackage: this.rootPackage,
-        isOrion: this.props.webFramework === 'Orion'
+        webFramework: this.props.webFramework
       }
     );
     this.fs.append(
