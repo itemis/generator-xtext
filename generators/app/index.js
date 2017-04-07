@@ -12,7 +12,6 @@ module.exports = class extends Generator {
     this.log('Welcome to the Xtext Yeoman generator.');
 
     const prompts = [
-      // TODO function for default values when project name is changed
       // TODO validation
       {
         type: 'input',
@@ -24,7 +23,7 @@ module.exports = class extends Generator {
         type: 'input',
         name: 'fqLanguageName', // Fully qualified language name
         message: 'Language name:',
-        default: function (answers) {
+        default: answers => {
           return `${answers.projectName}.MyDsl`;
         }
       },
@@ -32,7 +31,7 @@ module.exports = class extends Generator {
         type: 'input',
         name: 'fileExtension',
         message: 'File extension:',
-        default: function (answers) {
+        default: answers => {
           return answers.fqLanguageName.split('.').pop().toLowerCase();
         }
       },
@@ -53,12 +52,25 @@ module.exports = class extends Generator {
             name: 'web'
           }
         ],
-        validate: function (answers) {
+        validate: answers => {
           let webWithoutIde = answers.includes('web') && !answers.includes('ide');
           if (webWithoutIde) {
             return '\'ide\' is required when using \'web\'.';
           }
           return true;
+        }
+      },
+      {
+        type: 'list',
+        name: 'webFramework',
+        message: 'Select your web framework:',
+        choices: [
+          {name: 'Orion'},
+          {name: 'Ace'},
+          {name: 'CodeMirror'}
+        ],
+        when: answers => {
+          return answers.facets.includes('web');
         }
       }
     ];
@@ -140,7 +152,8 @@ module.exports = class extends Generator {
         languageName: this.languageName,
         fileExtension: this.props.fileExtension,
         testingEnabled: this.testingEnabled,
-        webEnabled: this.webEnabled
+        webEnabled: this.webEnabled,
+        webFramework: this.props.webFramework
       }
     );
 
@@ -200,7 +213,8 @@ module.exports = class extends Generator {
       this.destinationPath(`${this.props.projectName}.web/build.gradle`),
       {
         projectName: this.props.projectName,
-        rootPackage: this.rootPackage
+        rootPackage: this.rootPackage,
+        isOrion: this.props.webFramework === 'Orion'
       }
     );
     this.fs.append(
