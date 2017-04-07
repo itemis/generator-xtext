@@ -113,7 +113,7 @@ module.exports = class extends Generator {
   _setupGradleBuild() {
     // Copying static files
     this.fs.copy(
-      this.templatePath('.gitignore'),
+      this.templatePath('.gitignore.template'),
       this.destinationPath('.gitignore')
     );
     this.fs.copy(
