@@ -1,6 +1,18 @@
+<%
+	const isOrion = webFramework === 'Orion';
+	const isAce = webFramework === 'Ace';
+	const isCodeMirror = webFramework === 'CodeMirror';
+-%>
 plugins {
 	id 'war'
+<% if (isOrion) { -%>
+	id 'de.undercouch.download' version '3.2.0'
+<% } -%>
 }
+<% if (isOrion) { -%>
+import de.undercouch.gradle.tasks.download.Download
+<% } -%>
+
 dependencies {
 	compile project(':<%= projectName %>')
 	compile project(':<%= projectName %>.ide')
@@ -9,12 +21,32 @@ dependencies {
 	compile "org.eclipse.xtend:org.eclipse.xtend.lib:${xtextVersion}"
 	compile "org.webjars:requirejs:2.3.2"
 	compile "org.webjars:jquery:2.2.4"
+<% if (isAce) { -%>
 	compile "org.webjars:ace:1.2.3"
+<% } -%>
+<% if (isCodeMirror) { -%>
+	compile "org.webjars:codemirror:5.13.2"
+<% } -%>
 	providedCompile "org.eclipse.jetty:jetty-annotations:9.3.8.v20160314"
 	providedCompile "org.slf4j:slf4j-simple:1.7.21"
 }
+<% if (isOrion) { -%>
+def orionDir = file('src/main/webapp/orion')
+def orionUrl = 'http://download.eclipse.org/orion/drops/R-11.0-201602232219/built-codeEdit.zip'
+
+task downloadOrion(type: Download) {
+	src orionUrl
+	dest file("$buildDir/orion/built-codeEdit.zip")
+}
+
+task unpackOrion(dependsOn: downloadOrion, type: Copy) {
+	from(zipTree(downloadOrion.dest))
+	into(orionDir)
+}
+<% } -%>
+
 task jettyRun(type:JavaExec) {
-	dependsOn(sourceSets.main.runtimeClasspath)
+	dependsOn(sourceSets.main.runtimeClasspath<% if (isOrion) { %>, unpackOrion<% } %>)
 	classpath = sourceSets.main.runtimeClasspath.filter{it.exists()}
 	main = '<%= rootPackage %>.web.ServerLauncher'
 	standardInput = System.in

@@ -40,6 +40,9 @@ Workflow {
             validator = {
                 // composedCheck = "org.eclipse.xtext.validation.NamesAreUniqueValidator"
             }
+            <% if (webFramework) { -%>webSupport = {
+                framework = "<%= webFramework %>"
+            }<% } %>
         }
     }
 
