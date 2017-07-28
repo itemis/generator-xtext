@@ -11,6 +11,9 @@ describe('generator-xtext:app', () => {
         fqLanguageName: 'com.example.SomeDsl',
         fileExtension: 'somedsl',
         facets: []
+      })
+      .on('ready', generator => {
+        Object.getPrototypeOf(generator).install = () => {}; // skip Gradle execution
       });
   });
 
