@@ -228,7 +228,7 @@ module.exports = class extends Generator {
    * Run the Gradle build to generate the remaining files using the MWE2 workflow.
    */
   install() {
-    this.spawnCommand('./gradlew', ['build']);
+    this.spawnCommandSync('./gradlew', ['build']);
   }
 
 };

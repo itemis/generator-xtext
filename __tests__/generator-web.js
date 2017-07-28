@@ -8,13 +8,16 @@ var helpers = require('yeoman-test');
   describe(`generator-xtext with ${webFramework}`, () => {
     beforeAll(() => {
       return helpers.run(path.join(__dirname, '../generators/app'))
-            .withPrompts({
-              projectName: 'com.example.somedsl',
-              fqLanguageName: 'com.example.SomeDsl',
-              fileExtension: 'somedsl',
-              facets: ['ide', 'web'],
-              webFramework: webFramework
-            });
+        .withPrompts({
+          projectName: 'com.example.somedsl',
+          fqLanguageName: 'com.example.SomeDsl',
+          fileExtension: 'somedsl',
+          facets: ['ide', 'web'],
+          webFramework: webFramework
+        })
+        .on('ready', generator => {
+          Object.getPrototypeOf(generator).install = () => {}; // skip Gradle execution
+        });
     });
 
     it('build.gradle is generated for the ide project', () => {
