@@ -29,6 +29,14 @@ yo xtext
 
 ## Developers
 
+In order to test the generator locally run:
+
+```bash
+npm link
+```
+
+Which then allows you to run `yo xtext` against your local version of the generator.
+
 ### Release process
 
 In order to create a release, the version needs to be increased and tagged. This is done easily using `npm version`, for example:

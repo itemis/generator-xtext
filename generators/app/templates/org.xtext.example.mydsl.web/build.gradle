@@ -27,7 +27,7 @@ dependencies {
 <% if (isCodeMirror) { -%>
 	compile "org.webjars:codemirror:5.13.2"
 <% } -%>
-	providedCompile "org.eclipse.jetty:jetty-annotations:9.3.8.v20160314"
+	providedCompile "org.eclipse.jetty:jetty-annotations:9.4.9.v20180320"
 	providedCompile "org.slf4j:slf4j-simple:1.7.21"
 }
 <% if (isOrion) { -%>

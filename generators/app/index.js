@@ -8,7 +8,9 @@ module.exports = class extends Generator {
    * generation step.
    */
   prompting() {
+    this.xtextVersion = "2.16.0";
     this.log("Welcome to the Xtext Yeoman generator.");
+    this.log("This generator uses Xtext " + this.xtextVersion);
 
     const prompts = [
       // TODO validation
@@ -128,7 +130,10 @@ module.exports = class extends Generator {
     this.fs.copyTpl(
       this.templatePath("build.gradle"),
       this.destinationPath("build.gradle"),
-      { projectName: this.props.projectName }
+      {
+        projectName: this.props.projectName,
+        xtextVersion: this.xtextVersion
+      }
     );
   }
 
