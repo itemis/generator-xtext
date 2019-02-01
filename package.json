@@ -65,7 +65,7 @@
     ]
   },
   "scripts": {
-    "pretest": "eslint .",
+    "pretest": "eslint . --fix",
     "test": "jest",
     "test:watch": "npm run test -- --watch"
   },
