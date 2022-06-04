@@ -8,7 +8,7 @@ module.exports = {
   },
 
   toURL(thePackage) {
-    let [topLevelDomain, domain, ...rest] = thePackage.split(".");
+    const [topLevelDomain, domain, ...rest] = thePackage.split(".");
     return `http://www.${domain}.${topLevelDomain}/${rest.join("/")}`;
-  }
+  },
 };

@@ -67,7 +67,8 @@
   "scripts": {
     "pretest": "eslint . --fix",
     "test": "jest",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "npm run test -- --watch",
+    "prepare": "husky install"
   },
   "repository": "itemis/generator-xtext",
   "license": "EPL-1.0"
