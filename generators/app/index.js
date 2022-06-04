@@ -8,7 +8,7 @@ module.exports = class extends Generator {
    * generation step.
    */
   prompting() {
-    this.xtextVersion = "2.16.0";
+    this.xtextVersion = "2.27.0";
     this.log("Welcome to the Xtext Yeoman generator.");
     this.log("This generator uses Xtext " + this.xtextVersion);
 
