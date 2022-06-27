@@ -1,5 +1,5 @@
 dependencies {
-	compile project(':<%= projectName %>')
-	compile "org.eclipse.xtext:org.eclipse.xtext.ide:${xtextVersion}"
-	compile "org.eclipse.xtext:org.eclipse.xtext.xbase.ide:${xtextVersion}"
+	api project(':<%= projectName %>')
+	api "org.eclipse.xtext:org.eclipse.xtext.ide:${xtextVersion}"
+	api "org.eclipse.xtext:org.eclipse.xtext.xbase.ide:${xtextVersion}"
 }
