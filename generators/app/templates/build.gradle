@@ -1,19 +1,24 @@
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
+		gradlePluginPortal()
     }
     dependencies {
-        classpath 'org.xtext:xtext-gradle-plugin:2.0.2'
+        classpath 'org.xtext:xtext-gradle-plugin:3.0.2'
     }
 }
 
 subprojects {
     ext.xtextVersion = '<%= xtextVersion %>'
     repositories {
-        jcenter()
+        mavenCentral()
     }
 
-    apply plugin: 'java'
+    apply plugin: 'java-library'
+    dependencies {
+		api platform("org.eclipse.xtext:xtext-dev-bom:${xtextVersion}")
+	}
+
     apply plugin: 'org.xtext.xtend'
     apply from: "${rootDir}/gradle/source-layout.gradle"
     apply from: "${rootDir}/gradle/maven-deployment.gradle"
@@ -23,8 +28,8 @@ subprojects {
     group = '<%= projectName %>'
     version = '1.0.0-SNAPSHOT'
 
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
+    sourceCompatibility = '11'
+    targetCompatibility = '11'
 
     configurations.all {
         exclude group: 'asm'

@@ -8,7 +8,7 @@ module.exports = class extends Generator {
    * generation step.
    */
   prompting() {
-    this.xtextVersion = "2.16.0";
+    this.xtextVersion = "2.27.0";
     this.log("Welcome to the Xtext Yeoman generator.");
     this.log("This generator uses Xtext " + this.xtextVersion);
 
@@ -18,26 +18,23 @@ module.exports = class extends Generator {
         type: "input",
         name: "projectName",
         message: "Project name:",
-        default: "org.xtext.example.mydsl"
+        default: "org.xtext.example.mydsl",
       },
       {
         type: "input",
         name: "fqLanguageName", // Fully qualified language name
         message: "Language name:",
-        default: answers => {
+        default(answers) {
           return `${answers.projectName}.MyDsl`;
-        }
+        },
       },
       {
         type: "input",
         name: "fileExtension",
         message: "File extension:",
-        default: answers => {
-          return answers.fqLanguageName
-            .split(".")
-            .pop()
-            .toLowerCase();
-        }
+        default(answers) {
+          return answers.fqLanguageName.split(".").pop().toLowerCase();
+        },
       },
       {
         type: "checkbox",
@@ -46,37 +43,38 @@ module.exports = class extends Generator {
         choices: [
           {
             name: "testing",
-            checked: true
+            checked: true,
           },
           {
             name: "ide",
-            checked: true
+            checked: true,
           },
           {
-            name: "web"
-          }
+            name: "web",
+          },
         ],
-        validate: answers => {
-          let webWithoutIde =
+        validate(answers) {
+          const webWithoutIde =
             answers.includes("web") && !answers.includes("ide");
           if (webWithoutIde) {
             return "'ide' is required when using 'web'.";
           }
+
           return true;
-        }
+        },
       },
       {
         type: "list",
         name: "webFramework",
         message: "Select your web framework:",
         choices: [{ name: "Orion" }, { name: "Ace" }, { name: "CodeMirror" }],
-        when: answers => {
+        when(answers) {
           return answers.facets.includes("web");
-        }
-      }
+        },
+      },
     ];
 
-    return this.prompt(prompts).then(props => {
+    return this.prompt(prompts).then((props) => {
       // To access props later use this.props.someAnswer;
       this.props = props;
 
@@ -86,7 +84,7 @@ module.exports = class extends Generator {
       this.webEnabled = props.facets.includes("web");
 
       // Split the fully qualified language name into its root package and the actual name
-      let languageNameSplit = this.props.fqLanguageName.split(".");
+      const languageNameSplit = this.props.fqLanguageName.split(".");
       this.languageName = stringUtils.toFirstUpper(languageNameSplit.pop());
       this.rootPackage = languageNameSplit.join(".");
       this.javaSourceRoot = `src/main/java/${this.rootPackage
@@ -105,6 +103,7 @@ module.exports = class extends Generator {
     if (this.ideEnabled) {
       this._createIdeProject();
     }
+
     if (this.webEnabled) {
       this._createWebProject();
     }
@@ -132,7 +131,7 @@ module.exports = class extends Generator {
       this.destinationPath("build.gradle"),
       {
         projectName: this.props.projectName,
-        xtextVersion: this.xtextVersion
+        xtextVersion: this.xtextVersion,
       }
     );
   }
@@ -142,9 +141,7 @@ module.exports = class extends Generator {
    */
   _createCoreProject() {
     // Generate MWE2 file
-    let workflowFile = `${this.javaSourceRoot}/Generate${
-      this.languageName
-    }.mwe2`;
+    const workflowFile = `${this.javaSourceRoot}/Generate${this.languageName}.mwe2`;
     this.fs.copyTpl(
       this.templatePath(
         "org.xtext.example.mydsl/src/main/java/GenerateMyDsl.mwe2"
@@ -157,12 +154,12 @@ module.exports = class extends Generator {
         fileExtension: this.props.fileExtension,
         testingEnabled: this.testingEnabled,
         webEnabled: this.webEnabled,
-        webFramework: this.props.webFramework
+        webFramework: this.props.webFramework,
       }
     );
 
     // Generate Xtext grammar
-    let grammarFile = `${this.javaSourceRoot}/${this.languageName}.xtext`;
+    const grammarFile = `${this.javaSourceRoot}/${this.languageName}.xtext`;
     this.fs.copyTpl(
       this.templatePath("org.xtext.example.mydsl/src/main/java/MyDsl.xtext"),
       this.destinationPath(`${this.props.projectName}/${grammarFile}`),
@@ -170,7 +167,7 @@ module.exports = class extends Generator {
         rootPackage: this.rootPackage,
         languageName: this.languageName,
         ePackageName: stringUtils.toFirstLower(this.languageName),
-        ePackageNs: stringUtils.toURL(this.props.fqLanguageName)
+        ePackageNs: stringUtils.toURL(this.props.fqLanguageName),
       }
     );
 
@@ -179,9 +176,9 @@ module.exports = class extends Generator {
       this.templatePath("org.xtext.example.mydsl/build.gradle"),
       this.destinationPath(`${this.props.projectName}/build.gradle`),
       {
-        workflowFile: workflowFile,
-        grammarFile: grammarFile,
-        testingEnabled: this.testingEnabled
+        workflowFile,
+        grammarFile,
+        testingEnabled: this.testingEnabled,
       }
     );
     this.fs.write(
@@ -218,7 +215,7 @@ module.exports = class extends Generator {
       {
         projectName: this.props.projectName,
         rootPackage: this.rootPackage,
-        webFramework: this.props.webFramework
+        webFramework: this.props.webFramework,
       }
     );
     this.fs.append(

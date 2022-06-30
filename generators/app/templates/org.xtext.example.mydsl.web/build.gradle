@@ -6,7 +6,7 @@
 plugins {
 	id 'war'
 <% if (isOrion) { -%>
-	id 'de.undercouch.download' version '3.2.0'
+	id 'de.undercouch.download' version '5.1.0'
 <% } -%>
 }
 <% if (isOrion) { -%>
@@ -14,25 +14,25 @@ import de.undercouch.gradle.tasks.download.Download
 <% } -%>
 
 dependencies {
-	compile project(':<%= projectName %>')
-	compile project(':<%= projectName %>.ide')
-	compile "org.eclipse.xtext:org.eclipse.xtext.xbase.web:${xtextVersion}"
-	compile "org.eclipse.xtext:org.eclipse.xtext.web.servlet:${xtextVersion}"
-	compile "org.eclipse.xtend:org.eclipse.xtend.lib:${xtextVersion}"
-	compile "org.webjars:requirejs:2.3.2"
-	compile "org.webjars:jquery:2.2.4"
+	api project(':<%= projectName %>')
+	api project(':<%= projectName %>.ide')
+	api "org.eclipse.xtext:org.eclipse.xtext.xbase.web:${xtextVersion}"
+	api "org.eclipse.xtext:org.eclipse.xtext.web.servlet:${xtextVersion}"
+	api "org.eclipse.xtend:org.eclipse.xtend.lib:${xtextVersion}"
+	api "org.webjars:requirejs:2.3.6"
+	api "org.webjars:jquery:3.6.0"
 <% if (isAce) { -%>
-	compile "org.webjars:ace:1.2.3"
+	api "org.webjars:ace:1.3.3"
 <% } -%>
 <% if (isCodeMirror) { -%>
-	compile "org.webjars:codemirror:5.13.2"
+	api "org.webjars:codemirror:5.41.0"
 <% } -%>
-	providedCompile "org.eclipse.jetty:jetty-annotations:9.4.9.v20180320"
-	providedCompile "org.slf4j:slf4j-simple:1.7.21"
+	providedCompile "org.eclipse.jetty:jetty-annotations:9.4.45.v20220203"
+	providedCompile "org.slf4j:slf4j-simple:1.7.33"
 }
 <% if (isOrion) { -%>
 def orionDir = file('src/main/webapp/orion')
-def orionUrl = 'http://download.eclipse.org/orion/drops/R-11.0-201602232219/built-codeEdit.zip'
+def orionUrl = 'http://download.eclipse.org/orion/drops/R-17.0-201801111044/built-codeEdit.zip'
 
 task downloadOrion(type: Download) {
 	src orionUrl
@@ -43,12 +43,14 @@ task unpackOrion(dependsOn: downloadOrion, type: Copy) {
 	from(zipTree(downloadOrion.dest))
 	into(orionDir)
 }
+
+tasks.war.dependsOn(unpackOrion)
 <% } -%>
 
 task jettyRun(type:JavaExec) {
 	dependsOn(sourceSets.main.runtimeClasspath<% if (isOrion) { %>, unpackOrion<% } %>)
 	classpath = sourceSets.main.runtimeClasspath.filter{it.exists()}
-	main = '<%= rootPackage %>.web.ServerLauncher'
+	mainClass = '<%= rootPackage %>.web.ServerLauncher'
 	standardInput = System.in
 	group = 'run'
 	description = 'Starts an example Jetty server with your language'
