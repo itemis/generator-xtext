@@ -44,9 +44,7 @@ task unpackOrion(dependsOn: downloadOrion, type: Copy) {
 	into(orionDir)
 }
 
-war {
-    dependsOn(unpackOrion)
-}
+tasks.war.dependsOn(unpackOrion)
 <% } -%>
 
 task jettyRun(type:JavaExec) {
